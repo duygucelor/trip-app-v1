@@ -1,0 +1,14 @@
+ .map {
+    margin: 0;
+    height: 80vh;
+    width: 80vw;;
+  }
+  
+  svg {
+    display: inline-block;
+    vertical-align: middle;
+  }
+  
+  path {
+    fill: #273c69;
+  }
