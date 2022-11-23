@@ -281,7 +281,7 @@
           "type": "Polygon",
           "arcs": [[-49, 241, 242, 243]],
           "id": "CZE",
-          "properties": { "name": "Czechia" }
+          "properties": { "name": "Czech Republic" }
         },
         {
           "type": "Polygon",
@@ -1059,7 +1059,7 @@
             [[-341, -80, 673]]
           ],
           "id": "TUR",
-          "properties": { "name": "Turkey" }
+          "properties": { "name": "Türkiye" }
         },
         {
           "type": "Polygon",

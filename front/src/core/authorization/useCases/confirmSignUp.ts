@@ -16,7 +16,7 @@ export const confirmSignUp = createAsyncThunk(
   "authorization/confirmSignUp/initial",
   async (data: { email: string; code: string }, thunkAPI) => {
     const response = await Auth.confirmSignUp(data.email, data.code);
-    return response
+    return response;
   }
 );
 
@@ -37,10 +37,18 @@ export const confirmSignUpSlice = createSlice({
           status: "ERROR",
           error: action.error.message as string,
         };
+      })
+      .addCase(confirmSignUp.fulfilled, (state, action) => {
+        return {
+          status: "SUCCESS",
+          error: "",
+        };
       }),
 });
 
-export const confirmStatusSelector = (state: RootState) => state.auth.confirmSignUp.status;
-export const confirmErrorSelector = (state: RootState) => state.auth.confirmSignUp.error;
+export const confirmStatusSelector = (state: RootState) =>
+  state.auth.confirmSignUp.status;
+export const confirmErrorSelector = (state: RootState) =>
+  state.auth.confirmSignUp.error;
 export const { reset } = confirmSignUpSlice.actions;
 export default confirmSignUpSlice.reducer;

@@ -3,6 +3,10 @@ import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 import React, { useState, useRef, useCallback } from "react";
 import MapGL, { MapRef } from "react-map-gl";
 import Geocoder from "react-map-gl-geocoder";
+import mapboxgl from 'mapbox-gl';
+// eslint-disable-next-line import/no-webpack-loader-syntax
+import MapboxWorker from 'worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker';
+(mapboxgl as any).workerClass = MapboxWorker;
 
 export const SearchMap = ({setValue}:{setValue: any}) => {
   const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN
@@ -18,7 +22,7 @@ export const SearchMap = ({setValue}:{setValue: any}) => {
   );
   const handleOnResult = useCallback((event:any) => {
       setValue("coordinates", event.result.geometry.coordinates)
-      setValue("country", event.result.place_name.split(",").pop())
+      setValue("country", event.result.place_name.split(", ").pop())
       setValue("city", event.result.text)
 
   // eslint-disable-next-line react-hooks/exhaustive-deps

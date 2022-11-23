@@ -4,13 +4,14 @@ import { currentUserSelector } from "../../../core/authorization/useCases/curren
 import {getUserTrips} from "../../../core/trip/useCases/getUserTrips";
 import { tripsSelector } from "../../../core/trip/useCases/trips";
 import { useAppDispatch } from "../../../store";
+import { FlexRow } from "../../globalComponents/templates/FlexRow";
 import MapChart from "./components/MapChart";
+import MapLegends from "./components/MapLegends";
 
 const Home = () => {
   const dispatch = useAppDispatch();
   const username = useSelector(currentUserSelector)?.username;
   const trips = useSelector(tripsSelector)
-console.info(trips)
   useEffect(() => {
     if(username && trips){
       dispatch(getUserTrips(username))
@@ -19,7 +20,10 @@ console.info(trips)
   }, [username]); 
 
   return (
+    <FlexRow>
       <MapChart trips={trips}></MapChart>
+      <MapLegends/>
+    </FlexRow>
   )
 }
 export default Home

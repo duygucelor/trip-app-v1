@@ -5,7 +5,9 @@ export function useStaticMapMarkerSize(
   initialMapScaleFactor: number = 1
 ): [number, (scaleFactor: number) => void] {
   const [scaleFactor, setScaleFactor] = useState<number>(initialMapScaleFactor);
-  const scaledRadius = markerRadius / (scaleFactor - initialMapScaleFactor + 1);
-
-  return [scaledRadius, setScaleFactor];
+  const scaledRadius = Math.abs(markerRadius / (scaleFactor - initialMapScaleFactor + 1));
+  return [
+    scaledRadius < markerRadius ? scaledRadius : markerRadius,
+    setScaleFactor,
+  ];
 }

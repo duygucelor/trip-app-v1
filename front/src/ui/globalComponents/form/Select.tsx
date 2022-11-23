@@ -6,9 +6,10 @@ import {
   ControllerFieldState,
   Path,
 } from "react-hook-form";
+import { TripStatus } from "../../../core/trip/domain/trip";
 
 export interface Option {
-  value: string;
+  value: TripStatus | string;
   label: string;
 }
 

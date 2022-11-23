@@ -6,16 +6,19 @@ import {
   Marker,
   ZoomableGroup,
 } from "react-simple-maps";
-import Trip from "../../../../core/trip/domain/trip";
+import Trip, {
+  getMarkerColor,
+  TripStatus,
+} from "../../../../core/trip/domain/trip";
+import { colors } from "../../../constants/colors";
 import data from "../../../constants/features.json";
 import { useStaticMapMarkerSize } from "../../../globalComponents/hooks/mapHooks";
-
 import "./styles.css";
 
 const MapChart = ({ trips }: { trips: Trip[] }) => {
-  const initialScaleFactor = 1;
+  const initialScaleFactor = 4.6;
   const [scaledMarkerRadius, setScaleFactor] = useStaticMapMarkerSize(
-    3,
+    1.5,
     initialScaleFactor
   );
   const [position, setPosition] = useState({ coordinates: [0, 0], zoom: 1.2 });
@@ -24,6 +27,27 @@ const MapChart = ({ trips }: { trips: Trip[] }) => {
   ) => {
     setPosition(position);
   };
+
+  const visitedCountries: string[] = [];
+  const wishListedCountries: string[] = [];
+
+  trips.forEach((trip) => {
+    if (
+      (trip.status === TripStatus.alreadyVisited ||
+        trip.status === TripStatus.lived) &&
+      !visitedCountries.includes(trip.country)
+    ) {
+      visitedCountries.push(trip.country);
+    } else if (
+      (trip.status === TripStatus.plannedTrip ||
+        trip.status === TripStatus.wishToVisit) &&
+      !visitedCountries.includes(trip.country) &&
+      !wishListedCountries.includes(trip.country)
+    ) {
+      wishListedCountries.push(trip.country);
+    }
+  });
+
   return (
     <div className="map">
       <ComposableMap>
@@ -36,10 +60,18 @@ const MapChart = ({ trips }: { trips: Trip[] }) => {
           <Geographies geography={data}>
             {({ geographies }) =>
               geographies.map((geo) => {
+                const colorCode =
+                  (visitedCountries.includes(geo.properties.name) &&
+                    colors.visitedCountry) ||
+                  (wishListedCountries.includes(geo.properties.name) &&
+                    colors.wishToVisitCountries) ||
+                  "";
+
                 return (
                   <Geography
                     key={geo.rsmKey}
                     geography={geo}
+                    fill={colors.countryDefault}
                     style={{
                       hover: {
                         fill: "#AAA",
@@ -48,7 +80,9 @@ const MapChart = ({ trips }: { trips: Trip[] }) => {
                         outline: "none",
                       },
                       default: {
-                        fill:  "#273c69",
+                        fill: colorCode ?? colors.countryDefault,
+                        stroke: "#FFF",
+                        strokeWidth: 0.05,
                         outline: "none",
                       },
                       pressed: {
@@ -60,13 +94,11 @@ const MapChart = ({ trips }: { trips: Trip[] }) => {
               })
             }
           </Geographies>
-          {trips && trips.length>0 &&
-            trips.map(({ id, coordinates }) => (
-              <Marker
-                key={id}
-                coordinates={coordinates}
-              >
-                <circle r={scaledMarkerRadius} fill="#F53" />
+          {trips &&
+            trips.length > 0 &&
+            trips.map(({ id, coordinates, status }) => (
+              <Marker key={id} coordinates={coordinates}>
+                <circle r={scaledMarkerRadius} fill={getMarkerColor(status)} />
               </Marker>
             ))}
         </ZoomableGroup>
